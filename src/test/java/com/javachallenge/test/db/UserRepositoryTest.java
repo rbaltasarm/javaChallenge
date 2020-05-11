@@ -5,12 +5,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.javachallenge.entity.User;
 import com.javachallenge.repository.UserRepository;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -36,7 +41,7 @@ public class UserRepositoryTest {
     private static Random rnd = new Random();
 
    
-    
+   
    
     @Test
     public void createUser() {
@@ -132,4 +137,51 @@ public class UserRepositoryTest {
         assertThat(firstUser.getFriends().toArray()[0].equals(secondUser));
     }
 
+    
+     @Test
+    public void getAllFriends() {
+        
+        List<User> users=new ArrayList();
+        User user= new User("user");
+        repository.save(user);
+        
+        for(int i=1; i<6; i++){
+            User amigo=new User("amigo_"+i);
+            amigo= repository.save(amigo);
+            users.add(amigo);
+            user.addFriend(amigo);
+        }
+        
+        User amigoDe= new User("userAmigode");
+        amigoDe=repository.save(amigoDe);
+        amigoDe.addFriend(user);
+        amigoDe=repository.save(amigoDe);
+        
+        
+        User control= new User("control");
+        control=repository.save(control);
+        //persistence for generatin Ids
+        repository.save(user);
+        
+        Set<User> allFriends= repository.findAllFriends(user);
+        Iterator<User>it= users.listIterator();
+        while( it.hasNext()){
+            assertThat(allFriends.contains(it.next()));
+        }
+        assertThat(allFriends.contains(amigoDe));
+        assertThat(!allFriends.contains(control));
+        
+    }
+
+    
+    
+    @Test
+    public void findByName() {
+        String userName = "userFind_" + rnd.nextInt(10000);
+        this.firstUser = new User(userName);
+        firstUser = repository.save(firstUser);
+        secondUser = repository.findByName(userName);
+        assertThat(firstUser.equals(secondUser));
+    }
+    
 }

@@ -6,19 +6,16 @@
 package com.javachallenge.repository;
 
 import com.javachallenge.entity.User;
+import java.util.Set;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-/** 
+/**Extends the userRepository with custom methods
  *
  * @author Baltasar
- * @version 1.0
  */
-public interface UserRepository extends CrudRepository<User, Long>,CustomUserRepository {
-
-    @Query(value = "SELECT * FROM tbl_users u WHERE u.name = :name", 
-        nativeQuery = true)
-     public User findByName(@Param("name") String name);
-
+public interface CustomUserRepository {
+     public Set<User> findAllFriends(User user);
+     
+     
 }
