@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.javachallenge.repository;
+package com.javachallenge.repository.impl;
 
 import com.javachallenge.entity.User;
+import com.javachallenge.repository.CustomUserRepository;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;

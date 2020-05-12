@@ -1,6 +1,7 @@
 package com.javachallenge.entity;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -137,4 +138,28 @@ public class User {
            this.friends=friends;
        }
 	
+        @Override
+        public String toString() {
+        return "{" +
+                       "id:" + this.id +
+                        ", name:'" + this.name +
+                        "', friends:" + getIds(this.friends) +              
+                        ", friendOf:" + getIds(this.friendOf) +              
+                    '}';
+        }
+        
+        public static final String getIds(Set<User> lista){
+            Iterator it= lista.iterator();
+            StringBuilder sb= new StringBuilder();
+            sb.append("[");
+            while(it.hasNext()){
+                sb.append(((User)it.next()).getId().toString());
+                if(it.hasNext()){
+                    sb.append(",");
+                }
+            }
+            sb.append("]");
+            return sb.toString();
+        }
+        
 }
